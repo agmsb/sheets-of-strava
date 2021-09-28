@@ -20,7 +20,7 @@ In `Tools > Script Editor`, create two files:
 
 Update `oauth.gs` with your Strava client id and client secret.
 
-## Setting up `monthly_data`
+## Setting up `monthly_data` or `yearly_data`
 
 Example: roll-up rides by month
 ```
@@ -30,6 +30,17 @@ Example: roll-up rides by month
 Example: roll-up mileage by month
 ```
 =SUMIF(raw_data!A:A, "*2020-06*", raw_data!D:D)
+```
+
+## Setting up `gear_data`
+
+It ain't pretty but Strava creates unique IDs for your gear. 
+
+Example: roll-up mileage by gear. 
+
+```
+// change gear ID in 2nd arg
+=SUMIF(raw_data!K:K, "b7595586", raw_data!D:D)
 ```
 
 ## Setting up `friends_data`
