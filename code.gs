@@ -10,6 +10,7 @@ function onOpen() {
 function getRides() {
   
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  // all raw data will be written to sheet called "raw_data" - you must create this before hand
   var sheet = spreadsheet.getSheetByName('raw_data');
   var data = initiateStrava();
   var rideData = [];
@@ -51,7 +52,9 @@ function initiateStrava() {
   if (service.hasAccess()) {
     Logger.log('App has access.');
     var api = 'https://www.strava.com/api/v3/athlete/activities';
-    // input is epoch time, on first run need to catch up in increments of 200
+    // query parameter for input is to read activities after user provided epoch time
+    // max # of activities you can fetch is 200
+    // on initial data export, you'll need to read activities in increments of 200 and update the epoch time for last imported activity
     var query = '?after=1630135841&per_page=200';
     var headers = {
       Authorization: 'Bearer ' + service.getAccessToken()
