@@ -20,7 +20,7 @@ In `Tools > Script Editor`, create two files:
 
 Update `oauth.gs` with your Strava client id and client secret.
 
-Install the OAuth2 library for Google Apps Script, see [setup here](https://github.com/googleworkspace/apps-script-oauth2#setup)
+Install the OAuth2 library for Google Apps Script, see [setup here](https://github.com/googleworkspace/apps-script-oauth2#setup). In your first time running your code, run the function `getRides` in `Code.gs` from `Tools > Script Editor` - it will fail and prompt you to authorize in browser with a provided URL. 
 
 ## Setting up `monthly_data` or `yearly_data`
 
