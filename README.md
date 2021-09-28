@@ -11,6 +11,15 @@ I personally have the below set up:
 - `gear_data` roll-up sheet
 - `friends_data` roll-up sheet
 
+## Setting up `raw_data`
+
+Create a sheet titled `raw_data`.
+In `Tools > Script Editor`, create two files:
+- `code.gs`
+- `oauth.gs`
+
+Update `oauth.gs` with your Strava client id and client secret.
+
 ## Setting up `monthly_data`
 
 Example: roll-up rides by month
