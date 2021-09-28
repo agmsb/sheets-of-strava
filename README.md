@@ -20,15 +20,19 @@ In `Tools > Script Editor`, create two files:
 
 Update `oauth.gs` with your Strava client id and client secret.
 
+Install the OAuth2 library for Google Apps Script, see [setup here](https://github.com/googleworkspace/apps-script-oauth2#setup)
+
 ## Setting up `monthly_data` or `yearly_data`
 
 Example: roll-up rides by month
 ```
+// A2 being month formatted as YEAR-MO aka "XXXX-YY"
 =COUNTIF(raw_data!A:A, "*"&A2&"*")
 ```
 
 Example: roll-up mileage by month
 ```
+// A2 being month formatted as YEAR-MO aka "XXXX-YY"
 =SUMIF(raw_data!A:A, "*"&A2&"*", raw_data!D:D)
 ```
 
@@ -56,11 +60,13 @@ Then in the sheet `friends_data`, you can roll-up by data by friend using the be
 
 Example: roll-up rides by friend
 ```
+// A2 being Friend Name
 =COUNTIF(raw_data!M:M, "*"&A2&"*")
 ```
 
 Example: roll-up mileage by friend
 ```
+// A2 being Friend Name
 =SUMIF(raw_data!M:M, "*"&A2&"*", raw_data!D:D)
 ```
 
