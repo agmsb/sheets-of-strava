@@ -13,7 +13,20 @@ I personally have the below set up:
 
 ## Setting up `raw_data`
 
-Create a sheet titled `raw_data`.
+Create a sheet titled `raw_data` and add the below columns starting with column A:
+- Date	
+- Name	
+- Duration	
+- Distance	
+- Elevation	
+- Average Speed	
+- Max Speed	
+- Kilojoules	
+- Average Heart Rate	
+- Max Heart Rate	
+- Gear ID	
+- Athlete Count	
+
 In `Tools > Script Editor`, update `code.gs` and create a new file:
 - `oauth.gs`
 
