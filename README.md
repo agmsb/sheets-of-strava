@@ -5,7 +5,7 @@
 Every strava activity is written to a sheet titled `raw_data`. What you do with that afterwards is up to you.
 
 I personally have the below set up:
-- Google Data Studio Dashboard @ [cycling.agmsb.dev](cycling.agmsb.dev)
+- Google Data Studio Dashboard @ [cycling.agmsb.dev](https://cycling.agmsb.dev)
 - `monthly_data` roll-up sheet
 - `yearly_data` roll-up sheet
 - `gear_data` roll-up sheet
