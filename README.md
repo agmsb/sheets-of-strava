@@ -29,7 +29,7 @@ Example: roll-up rides by month
 
 Example: roll-up mileage by month
 ```
-=SUMIF(raw_data!A:A, "*2020-06*", raw_data!D:D)
+=SUMIF(raw_data!A:A, "*"&A2&"*", raw_data!D:D)
 ```
 
 ## Setting up `gear_data`
