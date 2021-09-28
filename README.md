@@ -50,9 +50,9 @@ In `raw_data`, I append 3 columns at the end of the sheet:
 - `Lifetime Distance`
 - `Lifetime Elevation`
 
-In `Friends`, I manually insert the friends I rode as `First Name` `Last Name`, with each friend separated by comma. 
+In `Friends`, I manually insert the friends I rode as `First Name` + ` ` + `Last Name`, with each friend separated by comma. 
 
-Then in the sheet `friends_data`, you can roll-up by data by friends using the below examples:
+Then in the sheet `friends_data`, you can roll-up by data by friend using the below examples:
 
 Example: roll-up rides by friend
 ```
