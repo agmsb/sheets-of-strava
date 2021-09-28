@@ -10,7 +10,7 @@ function onOpen() {
 function getRides() {
   
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  // all raw data will be written to sheet called "raw_data" - you must create this before hand
+  // all raw data will be written to sheet called "raw_data" - you must create this beforehand
   var sheet = spreadsheet.getSheetByName('raw_data');
   var data = initiateStrava();
   var rideData = [];
