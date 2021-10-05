@@ -4,7 +4,18 @@ function onOpen() {
   // create menu
   ui.createMenu('Strava')
     .addItem('Get Rides', 'getRides')
+    .addItem('Initialize Sheet', 'initializeRaw')
     .addToUi();
+}
+
+function initializeRaw() {
+
+  var rowHeaders = [
+      ["Time", "Name", "Duration", "Distance", "Elevation", "Average Speed", "Max Speed", "Output (kj)", "Average HR", "Max HR", "Gear ID", "Athlete Count"]
+  ]
+
+  SpreadsheetApp.getActive().getRange("raw_data!A1:L1").setValues(rowHeaders);
+  
 }
 
 function getRides() {
@@ -74,4 +85,3 @@ function initiateStrava() {
     Logger.log("Open the following URL and re-run the script: %s",
         authorizationUrl);
   }
-}
