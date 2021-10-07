@@ -4,18 +4,8 @@ function onOpen() {
   // create menu
   ui.createMenu('Strava')
     .addItem('Get Rides', 'getRides')
-    .addItem('Initialize Sheet', 'initializeRaw')
+    .addItem('Initialize Ride Sheet', 'initializeRideSheet')
     .addToUi();
-}
-
-function initializeRaw() {
-
-  var rowHeaders = [
-      ["Time", "Name", "Duration", "Distance", "Elevation", "Average Speed", "Max Speed", "Output (kj)", "Average HR", "Max HR", "Gear ID", "Athlete Count"]
-  ]
-
-  SpreadsheetApp.getActive().getRange("raw_data!A1:L1").setValues(rowHeaders);
-  
 }
 
 function getRides() {
@@ -23,7 +13,7 @@ function getRides() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   // all raw data will be written to sheet called "raw_data" - you must create this beforehand
   var sheet = spreadsheet.getSheetByName('raw_data');
-  var data = initiateStrava();
+  var data = initiateGetRides();
   var rideData = [];
 
   data.forEach(
@@ -57,7 +47,17 @@ function getRides() {
   sheet.getRange(sheet.getLastRow() + 1, 1, rideData.length, rideData[0].length).setValues(rideData);
 }
 
-function initiateStrava() {
+function initializeRideSheet() {
+
+  var rowHeaders = [
+      ["Time", "Name", "Duration", "Distance", "Elevation", "Average Speed", "Max Speed", "Output (kj)", "Average HR", "Max HR", "Gear ID", "Athlete Count"]
+  ]
+
+  SpreadsheetApp.getActive().getRange("raw_data!A1:L1").setValues(rowHeaders);
+  
+}
+
+function initiateGetRides() {
   
   var service = getStravaService();
   if (service.hasAccess()) {
