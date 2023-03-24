@@ -44,7 +44,9 @@ function getRides() {
       }
     }
   );
-  sheet.getRange(sheet.getLastRow() + 1, 1, rideData.length, rideData[0].length).setValues(rideData);
+  if(rideData.length > 0){
+    sheet.getRange(sheet.getLastRow() + 1, 1, rideData.length, rideData[0].length).setValues(rideData);
+  }
 }
 
 function initializeRideSheet() {
