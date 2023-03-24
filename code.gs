@@ -67,7 +67,10 @@ function initiateGetRides() {
     // max # of activities you can fetch is 200
     // on initial data export, you'll need to read activities in increments of 200 and update the epoch time for last imported activity
     // best site to convert unix timestamp to epoch - http://www.unixtimestampconverter.com/
-    var query = '?after=1630135841&per_page=200';
+    var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = spreadsheet.getSheetByName('scratch_data');
+    var epoch = sheet.getRange('H3').getValue() + 60;
+    var query = '?after=' + epoch + '&per_page=200';
     var headers = {
       Authorization: 'Bearer ' + service.getAccessToken()
     };
