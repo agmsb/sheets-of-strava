@@ -27,12 +27,12 @@ Create a sheet titled `raw_data` and add the below columns starting with column 
 - Gear ID	
 - Athlete Count	
 
-In `Tools > Script Editor`, update `code.gs` and create a new file:
-- `oauth.gs`
+In `Tools > Script Editor`, update `code.js` and create a new file:
+- `oauth.js`
 
-Update `oauth.gs` with your Strava client id and client secret.
+Update `oauth.js` with your Strava client id and client secret.
 
-Install the OAuth2 library for Google Apps Script, see [setup here](https://github.com/googleworkspace/apps-script-oauth2#setup). In your first time running your code, run the function `getRides` in `Code.gs` from `Tools > Script Editor` - it will fail and prompt you to authorize in browser with a provided URL. 
+Install the OAuth2 library for Google Apps Script, see [setup here](https://github.com/googleworkspace/apps-script-oauth2#setup). In your first time running your code, run the function `getRides` in `Code.js` from `Tools > Script Editor` - it will fail and prompt you to authorize in browser with a provided URL. 
 
 ## Setting up `monthly_data` or `yearly_data`
 
