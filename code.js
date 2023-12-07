@@ -48,8 +48,8 @@ function initiateGetRides() {
     Logger.log('App has access.');
     var api = 'https://www.strava.com/api/v3/athlete/activities';
     var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = spreadsheet.getSheetByName('scratch_data');
-    var epoch = sheet.getRange('H3').getValue() + 60;
+    var sheet = spreadsheet.getSheetByName('epoch');
+    var epoch = sheet.getRange('A1').getValue() + 60;
     var query = '?after=' + epoch + '&per_page=200';
     var headers = {
       Authorization: 'Bearer ' + service.getAccessToken()
@@ -75,9 +75,10 @@ function initiateGetSegmentEfforts() {
   var service = getStravaService();
   if (service.hasAccess()) {
     Logger.log('App has access.');
+    var segmentID = '141491'
     var api = 'https://www.strava.com/api/v3/segment_efforts';
     var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-    var query = '?segment_id=' + '141491' + '&per_page=200';
+    var query = '?segment_id=' + segmentID + '&per_page=200';
     var headers = {
       Authorization: 'Bearer ' + service.getAccessToken()
     };
