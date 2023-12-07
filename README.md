@@ -84,5 +84,4 @@ Example: roll-up mileage by friend
 
 ## TODO
 
-- Automatically update epoch time to right after last activity in `code.gs`
 - Add tutorial on setting up Google Data Studio
