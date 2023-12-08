@@ -68,38 +68,31 @@ function getSegmentEfforts() {
 function initiateStrava(context) {
   
   var service = getStravaService();
+  var api = 'https://www.strava.com/api/v3';
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var headers = {
+    Authorization: 'Bearer ' + service.getAccessToken()
+  };
+  var options = {
+    headers: headers,
+    method : 'GET',
+    muteHttpExceptions: true
+  };
   if (service.hasAccess()) {
     Logger.log('App has access.');
     if (context == 'rides') {
-      var api = 'https://www.strava.com/api/v3/athlete/activities';
-      var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+      var path = '/athlete/activities'
       var sheet = spreadsheet.getSheetByName('epoch');
       var epoch = sheet.getRange('A1').getValue() + 60;
       var query = '?after=' + epoch + '&per_page=200';
-      var headers = {
-        Authorization: 'Bearer ' + service.getAccessToken()
-      };
-      var options = {
-        headers: headers,
-        method : 'GET',
-        muteHttpExceptions: true
-      };
+      
     } 
     if (context == 'segments') {
       var segmentID = '141491'
-      var api = 'https://www.strava.com/api/v3/segment_efforts';
-      var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+      var api = '/segment_efforts';
       var query = '?segment_id=' + segmentID + '&per_page=200';
-      var headers = {
-        Authorization: 'Bearer ' + service.getAccessToken()
-      };
-      var options = {
-        headers: headers,
-        method : 'GET',
-        muteHttpExceptions: true
-      };
     }
-    var response = JSON.parse(UrlFetchApp.fetch(api + query, options));
+    var response = JSON.parse(UrlFetchApp.fetch(api + path + query, options));
     return response;  
   }
   else {
