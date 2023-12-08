@@ -89,7 +89,7 @@ function initiateStrava(context) {
     } 
     if (context == 'segments') {
       var segmentID = '141491'
-      var api = '/segment_efforts';
+      var path = '/segment_efforts';
       var query = '?segment_id=' + segmentID + '&per_page=200';
     }
     var response = JSON.parse(UrlFetchApp.fetch(api + path + query, options));
