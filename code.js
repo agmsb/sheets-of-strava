@@ -7,7 +7,7 @@ function onOpen() {
     .addToUi();
 }
 
-function initiateStrava() {
+function initiateStrava(context) {
   
   var service = getStravaService();
   if (service.hasAccess()) {
