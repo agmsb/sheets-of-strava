@@ -12,7 +12,7 @@ function getRides() {
   var context = 'rides'
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getSheetByName('raw_data');
-  var data = initiateStrava(context);
+  var data = callStrava(context);
   var rideData = [];
 
   data.forEach(
@@ -47,7 +47,7 @@ function getSegmentEfforts() {
   var context = 'segments'
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getSheetByName('segment_effort_data');
-  var data = initiateStrava(context);
+  var data = callStrava(context);
   var segmentEffortData = [];
 
   data.forEach(
@@ -65,7 +65,7 @@ function getSegmentEfforts() {
   }
 }
 
-function initiateStrava(context) {
+function callStrava(context) {
   
   var service = getStravaService();
   var api = 'https://www.strava.com/api/v3';
