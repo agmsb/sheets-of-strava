@@ -12,14 +12,14 @@ function onOpen() {
 function getRides() {
   
   var context = 'rides'
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = spreadsheet.getSheetByName('raw_data');
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('raw_data');
   var data = callStrava(context);
   var rideData = [];
 
   data.forEach(
     function(activity){
         var arr = [];
+        // TODO: Implement handling multiple possible activity types
         if(activity.type == "Ride"){
         arr.push(
           activity.start_date_local,
@@ -47,8 +47,7 @@ function getRides() {
 function getSegmentEfforts() {
   
   var context = 'segmentEfforts'
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = spreadsheet.getSheetByName('segment_effort_data');
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('segment_effort_data');
   var data = callStrava(context);
   var segmentEffortData = [];
 
@@ -89,6 +88,7 @@ function callStrava(context) {
     } 
     if (context == 'segmentEfforts') {
       var path = '/segment_efforts';
+      // TODO: Implement handling a dynamicly populated segment ID. 
       var segmentID = '141491'
       var query = '?segment_id=' + segmentID + '&per_page=200';
     }
