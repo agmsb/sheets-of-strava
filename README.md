@@ -1,4 +1,4 @@
-# google-sheets-strava
+# Sheets of Strava
 
 ## Overview
 
