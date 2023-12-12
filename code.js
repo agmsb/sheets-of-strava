@@ -1,3 +1,5 @@
+const api = 'https://www.strava.com/api/v3';
+
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
 
@@ -44,7 +46,7 @@ function getRides() {
 
 function getSegmentEfforts() {
   
-  var context = 'segments'
+  var context = 'segmentEfforts'
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getSheetByName('segment_effort_data');
   var data = callStrava(context);
@@ -68,7 +70,6 @@ function getSegmentEfforts() {
 function callStrava(context) {
   
   var service = getStravaService();
-  var api = 'https://www.strava.com/api/v3';
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var headers = {
     Authorization: 'Bearer ' + service.getAccessToken()
@@ -81,15 +82,14 @@ function callStrava(context) {
   if (service.hasAccess()) {
     Logger.log('App has access.');
     if (context == 'rides') {
-      var path = '/athlete/activities'
-      var sheet = spreadsheet.getSheetByName('epoch');
-      var epoch = sheet.getRange('A1').getValue() + 60;
-      var query = '?after=' + epoch + '&per_page=200';
+      var path = '/athlete/activities';
+      var lastRideEpoch = spreadsheet.getSheetByName('epoch').getRange('A1').getValue() + 60;
+      var query = '?after=' + lastRideEpoch + '&per_page=200';
       
     } 
-    if (context == 'segments') {
-      var segmentID = '141491'
+    if (context == 'segmentEfforts') {
       var path = '/segment_efforts';
+      var segmentID = '141491'
       var query = '?segment_id=' + segmentID + '&per_page=200';
     }
     var response = JSON.parse(UrlFetchApp.fetch(api + path + query, options));
