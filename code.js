@@ -82,7 +82,7 @@ function callStrava(context) {
     Logger.log('App has access.');
     if (context == 'rides') {
       var path = '/athlete/activities';
-      var lastRideEpoch = spreadsheet.getSheetByName('epoch').getRange('A1').getValue() + 60;
+      var lastRideEpoch = spreadsheet.getSheetByName('epoch').getRange('A1').getValue() + 1200;
       var query = '?after=' + lastRideEpoch + '&per_page=200';
       
     } 
