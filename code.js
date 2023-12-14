@@ -1,5 +1,7 @@
 const api = 'https://www.strava.com/api/v3';
 
+// Create menu in Google Sheets
+
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
 
@@ -8,6 +10,8 @@ function onOpen() {
     .addItem('Get Segment Efforts', 'getSegmentEfforts')
     .addToUi();
 }
+
+// Fetch all rides that have taken place after the last ride in the sheet.
 
 function getRides() {
   
@@ -44,6 +48,10 @@ function getRides() {
   }
 }
 
+// Fetch all segment efforts for a specified semgment.
+// Right now, currently uses a hardcoded segment ID in callStrava.
+
+
 function getSegmentEfforts() {
   
   var context = 'segmentEfforts'
@@ -65,6 +73,9 @@ function getSegmentEfforts() {
     sheet.getRange(sheet.getLastRow() + 1, 1, segmentEffortData.length, segmentEffortData[0].length).setValues(segmentEffortData);
   }
 }
+
+
+// Call Strava APIs to get data for rides and segment efforts
 
 function callStrava(context) {
   
