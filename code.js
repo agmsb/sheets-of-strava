@@ -1,7 +1,6 @@
 const api = 'https://www.strava.com/api/v3';
 
-// Create menu in Google Sheets
-
+// Create menu for operations in Google Sheets
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
 
@@ -11,47 +10,48 @@ function onOpen() {
     .addToUi();
 }
 
-// Fetch all rides that have taken place after the last ride in the sheet.
 
+// Convert default Strava activity metrics to desired metric
+function convertMetrics(activity) {
+  return [
+    activity.start_date_local,
+    activity.name,
+    activity.moving_time / 60, // seconds to minutes
+    activity.distance * 0.000621371, // meters to miles
+    activity.total_elevation_gain * 3.28084, // meters to feet
+    activity.average_speed * 0.000621371 * 60 * 60, // m/s to miles/hour
+    activity.max_speed * 0.000621371 * 60 * 60, // m/s to miles/hour
+    activity.kilojoules,
+    activity.average_heartrate,
+    activity.max_heartrate,
+    activity.gear_id,
+    activity.athlete_count
+  ];
+}
+
+// Get rides from Strava
 function getRides() {
-  
-  var context = 'rides'
+  var context = 'rides';
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('raw_data');
   var data = callStrava(context);
   var rideData = [];
 
   data.forEach(
-    function(activity){
-        var arr = [];
-        // TODO: Implement handling multiple possible activity types
-        if(activity.type == "Ride"){
-        arr.push(
-          activity.start_date_local,
-          activity.name,
-          activity.moving_time/60,
-          activity.distance*0.000621371,
-          activity.total_elevation_gain*3.28084,
-          activity.average_speed*0.000621371*60*60,
-          activity.max_speed*0.000621371*60*60,
-          activity.kilojoules,
-          activity.average_heartrate,
-          activity.max_heartrate,
-          activity.gear_id,
-          activity.athlete_count
-        );
-        rideData.push(arr);
+    function(activity) {
+      if (activity.type == "Ride") {
+        rideData.push(convertMetrics(activity));
       }
     }
   );
-  if(rideData.length > 0){
+
+  if (rideData.length > 0) {
     sheet.getRange(sheet.getLastRow() + 1, 1, rideData.length, rideData[0].length).setValues(rideData);
   }
 }
 
+
 // Fetch all segment efforts for a specified semgment.
 // Right now, currently uses a hardcoded segment ID in callStrava.
-
-
 function getSegmentEfforts() {
   
   var context = 'segmentEfforts'
@@ -76,7 +76,6 @@ function getSegmentEfforts() {
 
 
 // Call Strava APIs to get data for rides and segment efforts
-
 function callStrava(context) {
   
   var service = getStravaService();
