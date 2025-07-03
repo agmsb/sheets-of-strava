@@ -18,6 +18,6 @@ function authCallback(request) {
   if (isAuthorized) {
     return HtmlService.createHtmlOutput('Success! You can close this tab.');
   } else {
-    return HtmlService.createHtmlOutput('Denied. You can close this tab');
+    return HtmlService.createHtmlOutput('Denied. You can close this tab.');
   }
 }
