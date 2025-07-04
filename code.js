@@ -12,7 +12,6 @@ const CONFIG = {
       .filter(act => act.type === "Ride")
       .map(formatRideData),
   },
-  // New config for fetching all rides with pagination
   allRides: {
     sheetName: 'raw_data',
     fetcher: () => stravaApi.fetchAllAthleteActivities(),
@@ -37,13 +36,39 @@ const CONFIG = {
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('Strava')
-    .addItem('Get New Rides', 'runRideProcessing')
+    .addItem('Setup Rides Sheet', 'setupRidesSheet')
     .addItem('Get All Rides', 'runAllRideProcessing')
+    .addSeparator()
+    .addItem('Get New Rides', 'runRideProcessing')
+    .addSeparator()
     .addItem('Get Segment Efforts', 'runSegmentEffortProcessing')
     .addToUi();
 }
 
-// Entry for processing and writing  rides data.
+// Create raw_data sheet if it doesn't exist.
+function setupRidesSheet() {
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const sheetName = 'raw_data';
+
+  if (spreadsheet.getSheetByName(sheetName)) {
+    ui.alert(`The sheet "${sheetName}" already exists.`);
+    return;
+  }
+
+  const headers = [[
+    'Date', 'Name', 'Time (min)', 'Distance (mi)', 'Elevation (ft)', 'Avg Speed (mph)',
+    'Max Speed (mph)', 'Kilojoules', 'Avg Heart Rate', 'Max Heart Rate',
+    'Gear ID', 'Athlete Count'
+  ]];
+  
+  const sheet = spreadsheet.insertSheet(sheetName);
+  sheet.getRange(1, 1, headers.length, headers[0].length).setValues(headers);
+  sheet.setFrozenRows(1); // Freeze the header row for better usability
+
+  ui.alert(`Successfully created the "${sheetName}" sheet with headers.`);
+}
+
+// Entry for processing and writing rides data.
 function runRideProcessing() {
   processData(CONFIG.rides);
 }
@@ -119,16 +144,15 @@ function getLastRideEpoch() {
   return sheet.getRange('A1').getValue() + 300;
 }
 
-
 const stravaApi = {
-  // Fetches all activities after the last recorded one.
+  // Fetches any activities after the last recorded activity.
   fetchAthleteActivities() {
     const lastRideEpoch = getLastRideEpoch();
     const endpoint = `/athlete/activities?after=${lastRideEpoch}&per_page=200`;
     return this._fetch(endpoint);
   },
-  
-  // New function to fetch all activities using pagination.
+
+  // Fetches all activities from the user's Strava history.
   fetchAllAthleteActivities() {
     let allActivities = [];
     let page = 1;
@@ -156,28 +180,32 @@ const stravaApi = {
     const endpoint = `/segments/${segmentId}/all_efforts?per_page=200`;
     const efforts = this._fetch(endpoint);
     // Attach segmentId to the response for later use in the formatter.
-    return efforts ? { efforts, segmentId } : null;
+    return efforts ? {
+      efforts,
+      segmentId
+    } : null;
   },
-  
+
   // Generic utility for using the Strava API.
   _fetch(endpoint) {
     const service = getStravaService();
     const options = {
-      headers: { Authorization: `Bearer ${service.getAccessToken()}` },
+      headers: {
+        Authorization: `Bearer ${service.getAccessToken()}`
+      },
       muteHttpExceptions: true,
     };
     const response = UrlFetchApp.fetch(`${API_BASE_URL}${endpoint}`, options);
     const responseCode = response.getResponseCode();
-    
+
     if (responseCode === 200) {
       return JSON.parse(response.getContentText());
     }
-    
+
     Logger.log(`API request failed for ${endpoint} with status ${responseCode}: ${response.getContentText()}`);
     return null;
   }
 };
-
 
 const ui = {
   // Prompt users for a segment ID when getting segment efforts.
@@ -188,6 +216,14 @@ const ui = {
     const segmentId = result.getResponseText();
 
     return (button === ui.Button.OK && segmentId) ? segmentId : null;
+  },
+  
+  /**
+   * Shows a pop-up alert box in the spreadsheet.
+   * @param {string} message The message to display.
+   */
+  alert(message) {
+    SpreadsheetApp.getUi().alert(message);
   },
 
   // Log authorization URL.
