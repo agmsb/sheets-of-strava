@@ -12,6 +12,7 @@ const CONFIG = {
       .filter(act => act.type === "Ride")
       .map(formatRideData),
   },
+  // New config for fetching all rides with pagination
   allRides: {
     sheetName: 'raw_data',
     fetcher: () => stravaApi.fetchAllAthleteActivities(),
@@ -120,14 +121,14 @@ function getLastRideEpoch() {
 
 
 const stravaApi = {
-  // Fetches any activities after the last recorded activity.
+  // Fetches all activities after the last recorded one.
   fetchAthleteActivities() {
     const lastRideEpoch = getLastRideEpoch();
     const endpoint = `/athlete/activities?after=${lastRideEpoch}&per_page=200`;
     return this._fetch(endpoint);
   },
   
-  // Fetches all activities over the course of a user's Strava history.
+  // New function to fetch all activities using pagination.
   fetchAllAthleteActivities() {
     let allActivities = [];
     let page = 1;
@@ -150,6 +151,7 @@ const stravaApi = {
   },
 
   // Fetches all efforts for a given segment.
+  // TODO: Support iteration over pagination if fetching more than 200.
   fetchSegmentEfforts(segmentId) {
     const endpoint = `/segments/${segmentId}/all_efforts?per_page=200`;
     const efforts = this._fetch(endpoint);
@@ -181,7 +183,7 @@ const ui = {
   // Prompt users for a segment ID when getting segment efforts.
   promptForSegmentId() {
     const ui = SpreadsheetApp.getUi();
-    const result = ui.prompt('Enter a Strava segment ID', 'ID:', ui.ButtonSet.OK_CANCEL);
+    const result = ui.prompt('Enter a Strava segment ID', 'You can get a segment ID by looking at its Strava URL: https://strava.com/segments/{segmentId}', ui.ButtonSet.OK_CANCEL);
     const button = result.getSelectedButton();
     const segmentId = result.getResponseText();
 
