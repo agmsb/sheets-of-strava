@@ -12,6 +12,13 @@ const CONFIG = {
       .filter(act => act.type === "Ride")
       .map(formatRideData),
   },
+  allRides: {
+    sheetName: 'raw_data',
+    fetcher: () => stravaApi.fetchAllAthleteActivities(),
+    formatter: (activities) => activities
+      .filter(act => act.type === "Ride")
+      .map(formatRideData),
+  },
   segmentEfforts: {
     sheetName: 'segment_effort_data',
     fetcher: () => {
@@ -29,14 +36,20 @@ const CONFIG = {
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('Strava')
-    .addItem('Get Rides', 'runRideProcessing')
+    .addItem('Get New Rides', 'runRideProcessing')
+    .addItem('Get All Rides', 'runAllRideProcessing')
     .addItem('Get Segment Efforts', 'runSegmentEffortProcessing')
     .addToUi();
 }
 
-// Entry for processing and writing rides data.
+// Entry for processing and writing  rides data.
 function runRideProcessing() {
   processData(CONFIG.rides);
+}
+
+// Eentry for processing and writing all rides data.
+function runAllRideProcessing() {
+  processData(CONFIG.allRides);
 }
 
 // Entry for processing and writing segment efforts data.
@@ -108,11 +121,32 @@ function getLastRideEpoch() {
 
 const stravaApi = {
   // Fetches all activities after the last recorded one.
-  // TODO: Support iteration over pagination if fetching more than 200.
   fetchAthleteActivities() {
     const lastRideEpoch = getLastRideEpoch();
     const endpoint = `/athlete/activities?after=${lastRideEpoch}&per_page=200`;
     return this._fetch(endpoint);
+  },
+  
+  // New function to fetch all activities using pagination.
+  fetchAllAthleteActivities() {
+    let allActivities = [];
+    let page = 1;
+    let moreData = true;
+
+    while (moreData) {
+      const endpoint = `/athlete/activities?page=${page}&per_page=200`;
+      Logger.log(`Fetching page ${page} of activities...`);
+      const activities = this._fetch(endpoint);
+
+      if (activities && activities.length > 0) {
+        allActivities = allActivities.concat(activities);
+        page++;
+      } else {
+        moreData = false;
+      }
+    }
+    Logger.log(`Finished fetching. Total activities found: ${allActivities.length}`);
+    return allActivities;
   },
 
   // Fetches all efforts for a given segment.
