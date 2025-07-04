@@ -120,14 +120,14 @@ function getLastRideEpoch() {
 
 
 const stravaApi = {
-  // Fetches all activities after the last recorded one.
+  // Fetches any activities after the last recorded activity.
   fetchAthleteActivities() {
     const lastRideEpoch = getLastRideEpoch();
     const endpoint = `/athlete/activities?after=${lastRideEpoch}&per_page=200`;
     return this._fetch(endpoint);
   },
   
-  // New function to fetch all activities using pagination.
+  // Fetches all activities over the course of a user's Strava history.
   fetchAllAthleteActivities() {
     let allActivities = [];
     let page = 1;
@@ -150,7 +150,6 @@ const stravaApi = {
   },
 
   // Fetches all efforts for a given segment.
-  // TODO: Support iteration over pagination if fetching more than 200.
   fetchSegmentEfforts(segmentId) {
     const endpoint = `/segments/${segmentId}/all_efforts?per_page=200`;
     const efforts = this._fetch(endpoint);
