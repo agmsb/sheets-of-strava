@@ -73,7 +73,7 @@ function runRideProcessing() {
   processData(CONFIG.rides);
 }
 
-// Entry for processing and writing all rides data.
+// Eentry for processing and writing all rides data.
 function runAllRideProcessing() {
   processData(CONFIG.allRides);
 }
@@ -152,41 +152,49 @@ const stravaApi = {
     return this._fetch(endpoint);
   },
 
-  // Fetches all activities from the user's Strava history.
+  // Fetches all activities from the user's Strava history using the paginated fetcher.
   fetchAllAthleteActivities() {
-    let allActivities = [];
+    const baseEndpoint = '/athlete/activities';
+    const allActivities = this._fetchAllPages(baseEndpoint);
+    Logger.log(`Finished fetching. Total activities found: ${allActivities.length}`);
+    return allActivities;
+  },
+
+  // Fetches all efforts for a given segment using the paginated fetcher.
+  fetchSegmentEfforts(segmentId) {
+    const baseEndpoint = `/segments/${segmentId}/all_efforts`;
+    const allEfforts = this._fetchAllPages(baseEndpoint);
+    Logger.log(`Finished fetching. Total efforts found for segment ${segmentId}: ${allEfforts.length}`);
+
+    // Attach segmentId to the response for later use in the formatter.
+    return allEfforts.length > 0 ? {
+      efforts: allEfforts,
+      segmentId
+    } : null;
+  },
+
+  // Utility for fetching all pages for an endpoint from the Strava API.
+  _fetchAllPages(baseEndpoint) {
+    let allItems = [];
     let page = 1;
     let moreData = true;
 
     while (moreData) {
-      const endpoint = `/athlete/activities?page=${page}&per_page=200`;
-      Logger.log(`Fetching page ${page} of activities...`);
-      const activities = this._fetch(endpoint);
+      const endpoint = `${baseEndpoint}?page=${page}&per_page=200`;
+      Logger.log(`Fetching page ${page} for ${baseEndpoint}...`);
+      const items = this._fetch(endpoint);
 
-      if (activities && activities.length > 0) {
-        allActivities = allActivities.concat(activities);
+      if (items && items.length > 0) {
+        allItems = allItems.concat(items);
         page++;
       } else {
         moreData = false;
       }
     }
-    Logger.log(`Finished fetching. Total activities found: ${allActivities.length}`);
-    return allActivities;
+    return allItems;
   },
 
-  // Fetches all efforts for a given segment.
-  // TODO: Support iteration over pagination if fetching more than 200.
-  fetchSegmentEfforts(segmentId) {
-    const endpoint = `/segments/${segmentId}/all_efforts?per_page=200`;
-    const efforts = this._fetch(endpoint);
-    // Attach segmentId to the response for later use in the formatter.
-    return efforts ? {
-      efforts,
-      segmentId
-    } : null;
-  },
-
-  // Generic utility for using the Strava API.
+  // Utility for fetching a page from the Strava API.
   _fetch(endpoint) {
     const service = getStravaService();
     const options = {
@@ -204,30 +212,5 @@ const stravaApi = {
 
     Logger.log(`API request failed for ${endpoint} with status ${responseCode}: ${response.getContentText()}`);
     return null;
-  }
-};
-
-const ui = {
-  // Prompt users for a segment ID when getting segment efforts.
-  promptForSegmentId() {
-    const ui = SpreadsheetApp.getUi();
-    const result = ui.prompt('Enter a Strava segment ID', 'You can get a segment ID by looking at its Strava URL: https://strava.com/segments/{segmentId}', ui.ButtonSet.OK_CANCEL);
-    const button = result.getSelectedButton();
-    const segmentId = result.getResponseText();
-
-    return (button === ui.Button.OK && segmentId) ? segmentId : null;
-  },
-  
-  /**
-   * Shows a pop-up alert box in the spreadsheet.
-   * @param {string} message The message to display.
-   */
-  alert(message) {
-    SpreadsheetApp.getUi().alert(message);
-  },
-
-  // Log authorization URL.
-  logAuthorizationUrl(url) {
-    Logger.log(`App has no access. Please authorize here: ${url}`);
   }
 };
