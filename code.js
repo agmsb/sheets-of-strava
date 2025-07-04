@@ -73,7 +73,7 @@ function runRideProcessing() {
   processData(CONFIG.rides);
 }
 
-// Eentry for processing and writing all rides data.
+// Entry for processing and writing all rides data.
 function runAllRideProcessing() {
   processData(CONFIG.allRides);
 }
