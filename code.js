@@ -139,9 +139,30 @@ function writeDataToSheet(sheetName, data) {
 
 // Fetches the epoch time from your last ride.
 function getLastRideEpoch() {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('epoch');
-  // Add 5 minutes to prevent fetching the same last activity again.
-  return sheet.getRange('A1').getValue() + 300;
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('raw_data');
+  
+  // If sheet doesn't exist or has only a header, fetch all activities.
+  if (!sheet || sheet.getLastRow() <= 1) {
+    Logger.log('No activities found. Defaulting to fetch all activities.');
+    return 0;
+  }
+
+  const lastRow = sheet.getLastRow();
+  const lastDateString = sheet.getRange(lastRow, 1).getValue();
+  const lastEpoch = convertToEpoch(lastDateString);
+
+  // Add 1 second to the epoch to fetch activities *after* the last one.
+  return lastEpoch;
+}
+
+// Converts a date string to epoch time.
+function convertToEpoch(dateString) {
+  if (!dateString) return 0;
+  
+  const milliseconds = Date.parse(dateString);
+
+  // Return epoch in seconds, or 0 if parsing fails.
+  return isNaN(milliseconds) ? 0 : milliseconds / 1000;
 }
 
 const stravaApi = {
