@@ -2,6 +2,7 @@ const API_BASE_URL = 'https://www.strava.com/api/v3';
 const METERS_TO_MILES = 0.000621371;
 const METERS_TO_FEET = 3.28084;
 const M_PER_S_TO_MPH = 2.23694;
+const PT_OFFSET_SECONDS = 25200;
 
 // Config to dictate behavior for rides and segment efforts.
 const CONFIG = {
@@ -32,16 +33,23 @@ const CONFIG = {
   },
 };
 
-// Creates menu for users in Google Sheets.
+// Creates menu and sub-menus for users in Google Sheets.
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('Strava')
-    .addItem('Setup Rides Sheet', 'setupRidesSheet')
-    .addItem('Get All Rides', 'runAllRideProcessing')
+    .addSubMenu(
+      SpreadsheetApp.getUi()
+        .createMenu('Setup')
+        .addItem('Create rides sheet', 'setupRidesSheet')
+        .addItem('Get all rides', 'runAllRideProcessing')
+    )
     .addSeparator()
-    .addItem('Get New Rides', 'runRideProcessing')
-    .addSeparator()
-    .addItem('Get Segment Efforts', 'runSegmentEffortProcessing')
+    .addSubMenu(
+      SpreadsheetApp.getUi()
+        .createMenu('Update')
+        .addItem('Get new rides', 'runRideProcessing')
+        .addItem('Get segment efforts', 'runSegmentEffortProcessing')
+    )
     .addToUi();
 }
 
@@ -151,8 +159,8 @@ function getLastRideEpoch() {
   const lastDateString = sheet.getRange(lastRow, 1).getValue();
   const lastEpoch = convertToEpoch(lastDateString);
 
-  // Add 25200s to account for Pacific time.
-  return lastEpoch + 25200
+  // Adjust for PT.
+  return lastEpoch + PT_OFFSET_SECONDS
 ;
 }
 
