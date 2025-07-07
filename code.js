@@ -151,8 +151,9 @@ function getLastRideEpoch() {
   const lastDateString = sheet.getRange(lastRow, 1).getValue();
   const lastEpoch = convertToEpoch(lastDateString);
 
-  // Add 1 second to the epoch to fetch activities *after* the last one.
-  return lastEpoch;
+  // Add 25200s to account for Pacific time.
+  return lastEpoch + 25200
+;
 }
 
 // Converts a date string to epoch time.
